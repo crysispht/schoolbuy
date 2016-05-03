@@ -346,7 +346,8 @@
         $sql = "select sid,sname,simage,sdiscount from `shoes` s,`brands` b,`types` t " .
             ms_new_mysql::parseWhere($where) .
             " s.sbid=b.bid and s.stid=t.tid and b.bstate=1 and t.tdelete=0 and s.sdelete=0 limit {$offset},{$pageSize}";
-        $rows = $mysql->query($sql)->fetch_all(MYSQLI_ASSOC);
+        $res = $mysql->query($sql);
+        $rows=$mysql->fetchAll($res);
         return $rows;
     }
 

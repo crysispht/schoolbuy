@@ -12,6 +12,7 @@
         private $dbPassword;
         private $dbTable;
         private $dbConn;
+        private $dbPort;
         private $result;
         private $sql;
         private $pre;
@@ -22,7 +23,7 @@
         private $errormsg;
         private static $lastSqlStr;
 
-        public function __construct($dbHost, $dbUser, $dbPassword, $dbTable, $pre = "", $coding = "utf-8", $pcon = "0")
+        public function __construct($dbHost, $dbUser, $dbPassword, $dbTable, $port=3307,$pre = "", $coding = "utf-8", $pcon = "0")
         {
             $this->dbHost = $dbHost;
             $this->dbUser = $dbUser;
@@ -33,6 +34,7 @@
             $this->pcon = $pcon;
             $this->connect();
             $this->select_db($dbTable);
+            $this->dbPort=$port;
 
         }
 
@@ -55,7 +57,7 @@
             //$func = $this->pcon == 1 ? "mysql_pconnect" : "mysqli_connect";
 
             //$this->dbConn = @$func($this->dbHost, $this->dbUser, $this->dbPassword);
-            $this->dbConn = mysqli_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbTable);
+            $this->dbConn = mysqli_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbTable,3307);
             mysqli_query($this->dbConn,'set names utf8');
             if (!$this->dbConn) {
                 $this->halt("不能链接数据库", $this->sql);
@@ -239,7 +241,11 @@
          */
         public function fetchAll($query, $result_type = MYSQLI_ASSOC)
         {
-            return mysqli_fetch_all($query, $result_type);
+            $rows=array();
+            while ($row=mysqli_fetch_array($query,$result_type)){
+                $rows[]=$row;
+            }
+            return $rows;
         }
 
         /**
